@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/* Force all Tailwind color CSS variables to be generated */
+@source inline("text-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose,slate,gray,zinc,neutral,stone,mist}-{50,100,200,300,400,500,600,700,800,900,950}");
+
 /* Star Jedi Fonts */
 @font-face {
   font-family: 'Star Jedi';
@@ -50,22 +53,43 @@
   font-display: swap;
 }
 
+/* Aurebesh Font */
+@font-face {
+  font-family: 'Aurebesh';
+  src: url('/fonts/AUREHAND.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Huttese Font */
+@font-face {
+  font-family: 'Huttese';
+  src: url('/fonts/HUTTESE.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme static {
   --font-sans: 'Public Sans', sans-serif;
   --font-star-jedi: 'Star Jedi', sans-serif;
   --font-star-jedi-outline: 'Star Jedi Outline', sans-serif;
   --font-star-jedi-special: 'Star Jedi Special Edition', sans-serif;
   --font-star-jedi-logo: 'Star Jedi Logo', sans-serif;
+  --font-aurebesh: 'Aurebesh', sans-serif;
+  --font-huttese: 'Huttese', sans-serif;
 
-  --color-green-50: #EFFDF5;
-  --color-green-100: #D9FBE8;
-  --color-green-200: #B3F5D1;
-  --color-green-300: #75EDAE;
-  --color-green-400: #00DC82;
-  --color-green-500: #00C16A;
-  --color-green-600: #00A155;
-  --color-green-700: #007F45;
-  --color-green-800: #016538;
-  --color-green-900: #0A5331;
-  --color-green-950: #052E16;
+  /* Star Wars Yellow */
+  --color-yellow-50: #fffde7;
+  --color-yellow-100: #fff9c4;
+  --color-yellow-200: #fff59d;
+  --color-yellow-300: #fff176;
+  --color-yellow-400: #ffe81f;
+  --color-yellow-500: #fdd835;
+  --color-yellow-600: #f9a825;
+  --color-yellow-700: #f57f17;
+  --color-yellow-800: #e65100;
+  --color-yellow-900: #bf360c;
+  --color-yellow-950: #7f1d00;
 }

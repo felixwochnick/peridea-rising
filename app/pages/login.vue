@@ -7,7 +7,7 @@ const error = ref<string | null>(null)
 // Redirect if already logged in
 await init()
 if (user.value) {
-    await navigateTo('/')
+    await navigateTo('/game-modes-modes')
 }
 
 async function handleAnonymousLogin() {
@@ -15,7 +15,7 @@ async function handleAnonymousLogin() {
     error.value = null
     try {
         await loginAnonymously()
-        await navigateTo('/')
+        await navigateTo('/game-modes-modes')
     } catch (e) {
         error.value = 'Anmeldung fehlgeschlagen. Bitte versuche es erneut.'
         console.error(e)
@@ -26,15 +26,21 @@ async function handleAnonymousLogin() {
 </script>
 
 <template>
-    <UCard class="w-full max-w-sm">
+    <MatrixBackground color="white"/>
+    <UCard class="w-full max-w-lg">
         <template #header>
-            <div class="text-center space-y-2">
-                <h1 class="text-2xl font-bold tracking-widest uppercase text-primary font-star-jedi">
-                    Star Wars Catan
-                </h1>
-                <p class="text-sm text-muted">
-                    Möge die Macht mit dir sein
-                </p>
+            <div class="flex flex-col items-center justify-center gap-4">
+                <div class="text-6xl font-bold text-primary font-star-jedi flex flex-col gap-0 items-center lowercase">
+                    <div>
+                        Star
+                    </div>
+                    <div>
+                        Sars
+                    </div>
+                </div>
+                <div class="text-lg text-muted font-star-jedi lowercase">
+                    Peridea Rising
+                </div>
             </div>
         </template>
 
