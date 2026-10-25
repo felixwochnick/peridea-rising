@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 make g+
 COPY . .
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
   pnpm install --frozen-lockfile
-RUN pnpm build && pnpm build:mp
+RUN pnpm build
 
 # ---- runtime ----
 FROM node:24-slim
@@ -22,9 +22,9 @@ ENV NODE_ENV=production \
   PORT=3000
 
 COPY --from=build --chown=node:node /app/.output ./.output
-COPY --from=build --chown=node:node /app/dist/multiplayer ./multiplayer
+COPY --from=build --chown=node:node /app/dist/server.mjs ./server.mjs
 
 USER node
 EXPOSE 3000
-# Web app (default). Multiplayer server from the same image: `node multiplayer/server.mjs` (PORT=2567)
-CMD ["node", ".output/server/index.mjs"]
+# App and multiplayer server on one port; multiplayer under /colyseus (http → ws, https → wss)
+CMD ["node", "server.mjs"]

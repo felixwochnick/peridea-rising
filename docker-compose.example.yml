@@ -6,22 +6,12 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: db
-      NUXT_PUBLIC_MULTIPLAYER_URL: wss://mp.example.com
+    # app + multiplayer (/colyseus) – put a TLS reverse proxy in front for https / wss
     ports:
       - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
-
-  multiplayer:
-    image: ghcr.io/OWNER/REPO:latest
-    restart: unless-stopped
-    command: ["node", "multiplayer/server.mjs"]
-    env_file: .env
-    environment:
-      PORT: 2567
-    ports:
-      - "2567:2567"
 
   db:
     image: postgres:18

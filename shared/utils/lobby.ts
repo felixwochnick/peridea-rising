@@ -40,6 +40,8 @@ export interface LobbyView {
 }
 
 export const MULTIPLAYER_ROOM = 'galactic'
+/** Where the multiplayer server is mounted when it runs together with the app (multiplayer/serve.ts). */
+export const MULTIPLAYER_PATH = '/colyseus'
 /** Lobby codes: 6 characters without the easily confused 0/O/1/I. */
 export const LOBBY_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 export const LOBBY_CODE = /^[A-HJ-NP-Z2-9]{6}$/

@@ -16,15 +16,15 @@ Solo gegen Bots und KI, Multiplayer über einen server-autoritativen Colyseus-Se
 ## Architektur
 
 ```
-Browser ─────────────── HTTPS ──────────────► Nuxt/Nitro (Port 3000) ──► PostgreSQL
-  │  Service Worker (Precache, App-Shell)       ├─ /auth/authentik        (OIDC-Login)
-  │  localStorage (Einstellungen, Spielstand)   ├─ /api/auth/*            (Gast-Session, Multiplayer-Token)
-  │                                             ├─ /api/settings/[key]    (Einstellungs-Sync)
-  │                                             └─ /api/random/*, /api/ai/test
-  │
-  └──────────────────── WSS ──────────────────► Colyseus (Port 2567)
-                                                  GalacticRoom: Lobby + Partie, Regeln aus shared/utils
+Browser ── HTTP(S) / WS(S) ──► dist/server.mjs  (multiplayer/serve.ts, ein Prozess, Port 3000)
+  Service Worker                  ├─ /colyseus/*  → Colyseus (Prefix entfernt)
+  (Precache, App-Shell)           │    ├─ /matchmake/*   HTTP-Matchmaking
+  localStorage                    │    └─ Upgrade        WebSocket je Raum (GalacticRoom)
+  (Einstellungen, Spielstand)     └─ alles andere → Nitro (Preset node-listener) ──► PostgreSQL
+                                       /auth/authentik, /api/auth/*, /api/settings/:key, …
 ```
+
+App und Multiplayer laufen in **einem** Prozess auf **einem** Port: [`multiplayer/serve.ts`](multiplayer/serve.ts) erzeugt den HTTP-Server und verteilt nach Pfad. Requests und WebSocket-Upgrades unter `/colyseus` gehen an Colyseus, das auf einem eigenen, nie lauschenden `http.Server` sitzt (`Server.serverless()`). So überdecken seine Routen (`/`, `/__healthcheck`, `/matchmake/*`) nicht die der App. Alle anderen Requests beantwortet Nitro. Der Client verbindet sich mit `<origin>/colyseus`: Bei `http://` nutzt er `ws://`, bei `https://` entsprechend `wss://`. Ein eigener Host oder Port für den Multiplayer ist nicht nötig.
 
 Die Spiel-Engine (`shared/utils`) ist framework-neutral (nur `vue`-Reactivity) und läuft identisch im Browser (Solo) und im Multiplayer-Server. Im Multiplayer ist der Server autoritativ: Clients senden Aktionen, der Server prüft sie gegen die Regeln und verteilt den Zustand – verdeckte Karten der Mitspieler maskiert.
 
@@ -34,7 +34,7 @@ Die Spiel-Engine (`shared/utils`) ist framework-neutral (nur `vue`-Reactivity) u
 app/                Nuxt-App (Pages, Layouts, Komponenten, Composables, Plugins)
 server/             Nitro: API-Routen, Auth-Routen, Plugins, DB (server/db, server/utils/db.ts)
 shared/utils/       Spiel-Engine, Bots, Karten, Würfel – von App und Multiplayer-Server genutzt
-multiplayer/        Colyseus-Server (server.ts, GalacticRoom.ts, auth.ts, dice.ts)
+multiplayer/        serve.ts (Produktions-Einstieg: App + Multiplayer), server.ts (standalone), GalacticRoom.ts, auth.ts, dice.ts
 public/             Statische Assets: Modelle, Texturen, Bilder, Schriften, PWA-Icons
 blender/            Quelldateien der 3D-Modelle (nicht im Docker-Image)
 ```
@@ -47,16 +47,17 @@ Voraussetzungen: Node.js ≥ 22, pnpm in der Version aus `packageManager` (`core
 pnpm install
 cp .env.example .env
 pnpm dev        # App, http://localhost:3000
-pnpm dev:mp     # Multiplayer-Server, ws://localhost:2567 (tsx watch)
+pnpm dev:mp     # Multiplayer-Server standalone, ws://localhost:2567 (tsx watch)
 ```
 
-Ohne `POSTGRES_HOST` startet die App im Dev-Modus ohne Datenbank; der Einstellungs-Sync antwortet dann mit `503`, Einstellungen bleiben lokal.
+Im Dev-Modus laufen App (Vite/Nitro-Dev-Server) und Multiplayer als zwei Prozesse; der Client verbindet sich dann mit `ws://localhost:2567`. Ohne `POSTGRES_HOST` startet die App im Dev-Modus ohne Datenbank; der Einstellungs-Sync antwortet dann mit `503`, Einstellungen bleiben lokal.
 
 | Befehl | |
 | --- | --- |
-| `pnpm build` | App-Build nach `.output/` (inkl. Service Worker und prerenderter App-Shell) |
-| `pnpm build:mp` | Multiplayer-Server mit esbuild als ein ESM-Bundle nach `dist/multiplayer/server.mjs` (ohne `node_modules` lauffähig) |
-| `pnpm preview` | Produktions-Build lokal starten |
+| `pnpm build` | App-Build nach `.output/` (inkl. Service Worker und prerenderter App-Shell) und `build:server` |
+| `pnpm build:server` | Produktions-Einstieg `multiplayer/serve.ts` mit esbuild als ESM-Bundle nach `dist/server.mjs` (Colyseus gebündelt, lädt `.output/server/index.mjs` zur Laufzeit) |
+| `pnpm preview` / `pnpm start` | Produktions-Build starten (`node dist/server.mjs`, mit bzw. ohne `.env`) |
+| `pnpm build:mp` | Optional: Multiplayer-Server standalone nach `dist/multiplayer/server.mjs` |
 | `pnpm lint` / `pnpm typecheck` | ESLint / `nuxt typecheck` |
 
 ## Konfiguration
@@ -70,13 +71,15 @@ Ausschließlich über Umgebungsvariablen (lokal `.env`, Vorlage `.env.example`).
 | `NUXT_OAUTH_AUTHENTIK_CLIENT_SECRET` | App | Client-Secret |
 | `NUXT_OAUTH_AUTHENTIK_DOMAIN` | App | Authentik-Host ohne Schema, z. B. `auth.example.com`. Redirect-URI: `<app>/auth/authentik` |
 | `NUXT_MULTIPLAYER_SECRET` | App, Multiplayer | HMAC-Schlüssel (HS256) der Multiplayer-Tokens: die App signiert, der Colyseus-Server prüft. Muss auf beiden Seiten identisch sein; in Produktion Pflicht. |
-| `NUXT_PUBLIC_MULTIPLAYER_URL` | App (Client) | WebSocket-URL des Colyseus-Servers, z. B. `wss://mp.example.com`. Zur Laufzeit überschreibbar. |
+| `NUXT_PUBLIC_MULTIPLAYER_URL` | App (Client) | Leer lassen (Standard): Produktion nutzt `<origin>/colyseus`, Entwicklung `ws://localhost:2567`. Nur für einen separat betriebenen Multiplayer-Server setzen, z. B. `wss://mp.example.com`. |
 | `POSTGRES_HOST` | App | Datenbank-Host. In Produktion Pflicht, ohne ihn startet die App nicht. |
 | `POSTGRES_PORT` | App | Standard `5432` |
 | `POSTGRES_USER` | App | |
 | `POSTGRES_PASSWORD` | App | |
 | `POSTGRES_DB` | App | |
-| `PORT` | App, Multiplayer | Listen-Port, Standard `3000` (App) bzw. `2567` (Multiplayer) |
+| `PORT` | Server | Listen-Port, Standard `3000` (`dist/server.mjs`) bzw. `2567` (Multiplayer standalone) |
+| `HOST` | Server | Bind-Adresse, im Docker-Image `0.0.0.0` |
+| `NITRO_ENTRY` | Server | Pfad zum Nitro-Build, Standard `.output/server/index.mjs` (relativ zum Arbeitsverzeichnis) |
 | `MULTIPLAYER_DICE` | Multiplayer | `local`: lokaler Zufall statt drand (Entwicklung ohne Internet) |
 
 ## Authentifizierung
@@ -164,18 +167,17 @@ Service Worker benötigen HTTPS (Ausnahme: `localhost`).
 
 Multi-Stage-Build auf `node:24-slim` ([`Dockerfile`](Dockerfile)):
 
-- **Build-Stage:** `pnpm install --frozen-lockfile`, `pnpm build`, `pnpm build:mp`
-- **Runtime-Stage:** nur `.output/` und `multiplayer/server.mjs`, läuft als User `node`, `NODE_ENV=production`
+- **Build-Stage:** `pnpm install --frozen-lockfile`, `pnpm build`
+- **Runtime-Stage:** nur `.output/` und `server.mjs`, läuft als User `node`, `NODE_ENV=production`, `CMD ["node", "server.mjs"]`
 
 ```bash
-# App (Standard-Kommando), Port 3000
+# App + Multiplayer (/colyseus), Port 3000
 docker run --env-file .env -p 3000:3000 ghcr.io/<owner>/<repo>
-
-# Multiplayer-Server aus demselben Image, Port 2567
-docker run --env-file .env -e PORT=2567 -p 2567:2567 ghcr.io/<owner>/<repo> node multiplayer/server.mjs
 ```
 
-[`docker-compose.example.yml`](docker-compose.example.yml) enthält eine vollständige Umgebung (App, Multiplayer, PostgreSQL mit Healthcheck). Für Produktion gehören App und Multiplayer hinter einen TLS-terminierenden Reverse Proxy (PWA und `wss://`).
+[`docker-compose.example.yml`](docker-compose.example.yml) enthält eine vollständige Umgebung (App mit Multiplayer, PostgreSQL mit Healthcheck).
+
+Für HTTPS einen TLS-terminierenden Reverse Proxy davorsetzen, der WebSocket-Upgrades durchreicht (`Upgrade`/`Connection`-Header; bei Traefik und Caddy Standard, bei nginx `proxy_http_version 1.1` + `proxy_set_header Upgrade $http_upgrade` + `proxy_set_header Connection "upgrade"`). HTTPS ist Voraussetzung für die PWA; per HTTP funktionieren App und Multiplayer ebenfalls, nur ohne Service Worker (außer auf `localhost`).
 
 ### CI
 

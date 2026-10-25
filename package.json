@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt build && pnpm build:server",
+    "build:server": "esbuild multiplayer/serve.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist/server.mjs --banner:js=\"import { createRequire as __cr } from 'node:module'; const require = __cr(import.meta.url);\"",
     "dev": "nuxt dev",
-    "preview": "nuxt preview",
+    "preview": "node --env-file-if-exists=.env dist/server.mjs",
+    "start": "node dist/server.mjs",
     "postinstall": "nuxt prepare",
     "format": "prettier --write .",
     "lint": "eslint .",

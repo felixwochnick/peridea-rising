@@ -28,8 +28,14 @@ export function useMultiplayer() {
   const toast = (title: string, color: 'error' | 'warning' | 'info' = 'error') =>
     inContext(() => useToast().add({ title, color, icon: 'i-lucide-wifi-off' }))
 
+  /** Configured URL, or the app's own address (http → ws, https → wss) where serve.ts mounts the server. */
+  function endpoint() {
+    if (config.public.multiplayerUrl) return config.public.multiplayerUrl
+    return import.meta.dev ? 'ws://localhost:2567' : `${location.origin}${MULTIPLAYER_PATH}`
+  }
+
   async function connect() {
-    sdk ??= new Client(config.public.multiplayerUrl)
+    sdk ??= new Client(endpoint())
     const { token } = await $fetch<{ token: string }>('/api/auth/colyseus-token')
     sdk.auth.token = token
     return sdk

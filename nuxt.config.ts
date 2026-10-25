@@ -4,9 +4,18 @@ export default defineNuxtConfig({
     /** Shared with the multiplayer server (signs player tokens): NUXT_MULTIPLAYER_SECRET */
     multiplayerSecret: '',
     public: {
-      /** Colyseus server: NUXT_PUBLIC_MULTIPLAYER_URL */
-      multiplayerUrl: 'ws://localhost:2567'
+      /**
+       * Colyseus server: NUXT_PUBLIC_MULTIPLAYER_URL. Empty = same address as the app (production,
+       * multiplayer/serve.ts); in development the standalone server from `pnpm dev:mp`.
+       */
+      multiplayerUrl: ''
     }
+  },
+
+  nitro: {
+    // only the request handler: multiplayer/serve.ts runs it next to the multiplayer server on one port
+    preset: 'node-listener',
+    serveStatic: true
   },
 
   modules: [
