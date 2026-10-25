@@ -182,9 +182,13 @@ docker run --env-file .env -e PORT=2567 -p 2567:2567 ghcr.io/<owner>/<repo> node
 | Workflow | Auslöser | |
 | --- | --- | --- |
 | [`ci.yml`](.github/workflows/ci.yml) | jeder Push | Lint, Typecheck |
-| [`docker.yml`](.github/workflows/docker.yml) | Release veröffentlicht | Image für `linux/amd64` + `linux/arm64` (Buildx/QEMU, GHA-Cache) nach `ghcr.io/<owner>/<repo>` |
+| [`docker.yml`](.github/workflows/docker.yml) | Tag `v*.*.*` gepusht | Image für `linux/amd64` + `linux/arm64` (Buildx/QEMU, GHA-Cache) nach `ghcr.io/<owner>/<repo>` |
 
-Tags aus dem Release-Tag (SemVer): `1.2.3`, `1.2`, `1` und `latest` (nicht bei Pre-Releases).
+Image-Tags aus dem Git-Tag (SemVer): `1.2.3`, `1.2`, `1` und `latest`. Pre-Release-Tags (`v1.3.0-rc.1`) erzeugen nur `1.3.0-rc.1`.
+
+```bash
+git tag v1.2.3 && git push origin v1.2.3
+```
 
 ## Lizenz & Rechtliches
 
