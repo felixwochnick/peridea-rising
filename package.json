@@ -39,6 +39,7 @@
     "@nuxt/fonts": "^0.14.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^26.6.5",
+    "@types/three": "~0.184.1",
     "@vite-pwa/nuxt": "^1.1.1",
     "esbuild": "^0.28.2",
     "eslint": "^10.9.1",

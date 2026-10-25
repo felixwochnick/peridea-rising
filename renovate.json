@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>nuxt/renovate-config-nuxt"]
+  "extends": ["github>nuxt/renovate-config-nuxt"],
+  "packageRules": [
+    {
+      "description": "TresJS 5.8 is typed against @types/three 0.184 – newer types break the template prop types (position/scale). Lift when TresJS supports them.",
+      "matchPackageNames": ["@types/three"],
+      "allowedVersions": "<0.185.0"
+    }
+  ]
 }

@@ -28,7 +28,7 @@ const corners = computed(() => {
 
 const edgeData = computed(() => {
   return corners.value.map((corner, i) => {
-    const next = corners.value[(i + 1) % 6]
+    const next = corners.value[(i + 1) % 6]!
     const mid = new THREE.Vector3().addVectors(corner, next).multiplyScalar(0.5)
     const dir = new THREE.Vector3().subVectors(next, corner)
     const length = dir.length()
