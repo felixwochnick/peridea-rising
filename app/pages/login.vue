@@ -42,14 +42,14 @@ async function handleSsoLogin() {
             <div class="flex flex-col items-center justify-center gap-4">
                 <div class="text-6xl font-bold text-primary font-star-jedi flex flex-col gap-0 items-center lowercase">
                     <div>
-                        Star
+                        Peridea
                     </div>
                     <div>
-                        Wars
+                        Rising
                     </div>
                 </div>
                 <div class="text-lg text-muted font-star-jedi lowercase">
-                    Peridea Rising
+                    Galactic Colonization
                 </div>
             </div>
         </template>

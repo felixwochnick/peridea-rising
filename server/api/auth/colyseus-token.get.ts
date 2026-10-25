@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const token = await new SignJWT({ name: user.name })
     .setProtectedHeader({ alg: 'HS256' })
     .setSubject(user.id)
-    .setIssuer('star-wars-catan')
+    .setIssuer('peridea-rising')
     .setAudience('multiplayer')
     .setIssuedAt()
     .setExpirationTime('1h')

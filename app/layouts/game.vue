@@ -20,8 +20,8 @@ async function handleLogout() {
         to="/game-modes"
         class="font-star-jedi tracking-widest lowercase hover:opacity-80 transition-opacity flex items-center gap-4"
       >
-        <div class="text-primary text-2xl">Star Wars</div>
-        <div class="text-muted text-sm">Peridea Rising</div>
+        <div class="text-primary text-2xl">Peridea</div>
+        <div class="text-muted text-sm">Rising</div>
       </NuxtLink>
 
       <UDropdownMenu

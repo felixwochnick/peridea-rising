@@ -14,8 +14,8 @@ useHead({
 })
 
 useSeoMeta({
-  title: 'Star Wars Catan',
-  description: 'Das galaktische Siedler von Catan Erlebnis'
+  title: 'Peridea Rising',
+  description: 'Galaktisches Aufbau- und Handelsspiel: Planeten besiedeln, Rohstoffe handeln, Hyperraumrouten bauen.'
 })
 </script>
 

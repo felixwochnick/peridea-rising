@@ -29,9 +29,9 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'prompt',
     manifest: {
-      name: 'Star Wars Catan – Peridea Rising',
-      short_name: 'SW Catan',
-      description: 'Das galaktische Siedler von Catan Erlebnis',
+      name: 'Peridea Rising',
+      short_name: 'Peridea',
+      description: 'Galaktisches Aufbau- und Handelsspiel: Planeten besiedeln, Rohstoffe handeln, Hyperraumrouten bauen.',
       lang: 'de',
       theme_color: '#02040a',
       background_color: '#02040a',

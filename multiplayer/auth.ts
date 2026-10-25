@@ -2,7 +2,7 @@
 // signed with the shared secret NUXT_MULTIPLAYER_SECRET.
 import { jwtVerify } from 'jose'
 
-export const TOKEN_ISSUER = 'star-wars-catan'
+export const TOKEN_ISSUER = 'peridea-rising'
 export const TOKEN_AUDIENCE = 'multiplayer'
 
 const secret = process.env.NUXT_MULTIPLAYER_SECRET

@@ -17,8 +17,8 @@ async function handleLogout() {
     <!-- Nav Bar -->
     <nav class="relative z-10 flex items-center justify-between px-6 py-4 border-b border-mist-700/40 backdrop-blur-sm bg-black/20">
       <NuxtLink to="/game-modes" class="font-star-jedi tracking-widest lowercase hover:opacity-80 transition-opacity flex items-center gap-4">
-          <div class="text-primary text-2xl"> Star Wars </div>
-          <div class="text-muted text-sm"> Peridea Rising </div>
+          <div class="text-primary text-2xl"> Peridea </div>
+          <div class="text-muted text-sm"> Rising </div>
       </NuxtLink>
 
       <UDropdownMenu
