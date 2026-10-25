@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'game', middleware: 'auth' })
+definePageMeta({ middleware: 'auth' })
 
 const modes = [
     {

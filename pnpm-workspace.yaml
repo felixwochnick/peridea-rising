@@ -3,5 +3,6 @@ allowBuilds:
   '@tailwindcss/oxide': false
   better-sqlite3: true
   esbuild: false
+  msgpackr-extract: false
   unrs-resolver: false
   vue-demi: false

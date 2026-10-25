@@ -1,0 +1,41 @@
+# Example deployment: cp docker-compose.example.yml docker-compose.yml, fill in .env, `docker compose up -d`
+services:
+  app:
+    image: ghcr.io/OWNER/REPO:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+      NUXT_PUBLIC_MULTIPLAYER_URL: wss://mp.example.com
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  multiplayer:
+    image: ghcr.io/OWNER/REPO:latest
+    restart: unless-stopped
+    command: ["node", "multiplayer/server.mjs"]
+    env_file: .env
+    environment:
+      PORT: 2567
+    ports:
+      - "2567:2567"
+
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  db:

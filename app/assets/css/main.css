@@ -71,6 +71,22 @@
   font-display: swap;
 }
 
+/* HUD size classes (match useHudLayout): compact = phones/tablets, large = big unscaled monitors */
+@custom-variant compact (@media (max-width: 1279px), (max-height: 640px));
+@custom-variant full (@media (min-width: 1280px) and (min-height: 641px));
+@custom-variant large (@media (min-width: 1920px) and (min-height: 1000px));
+
+/* Popups of the game HUD sit just above the bottom command bar (whose height depends on the HUD size). */
+@utility hud-above-bar {
+  bottom: 8.5rem;
+  max-width: calc(100vw - 1rem);
+  max-height: calc(100dvh - 13rem);
+  overflow-y: auto;
+  @media (min-width: 40rem) { bottom: 4.75rem; max-height: calc(100dvh - 9rem); }
+  @media (min-width: 1280px) and (min-height: 641px) { bottom: 11rem; max-height: calc(100dvh - 20rem); }
+  @media (min-width: 1920px) and (min-height: 1000px) { bottom: 14rem; }
+}
+
 @theme static {
   --font-sans: 'Public Sans', sans-serif;
   --font-star-jedi: 'Star Jedi', sans-serif;
@@ -93,3 +109,15 @@
   --color-yellow-900: #bf360c;
   --color-yellow-950: #7f1d00;
 }
+
+/* Game HUD without glass blur (graphics quality below "high"): blurring over a live WebGL
+   canvas is re-done every frame and is very expensive. Slightly darker panels instead. */
+.hud-flat [class*="backdrop-blur"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.hud-flat [class*="bg-black/50"] { background-color: rgb(0 0 0 / 0.68); }
+.hud-flat [class*="bg-black/60"] { background-color: rgb(0 0 0 / 0.75); }
+.hud-flat [class*="bg-black/75"],
+.hud-flat [class*="bg-black/80"],
+.hud-flat [class*="bg-black/85"] { background-color: rgb(0 0 0 / 0.9); }
