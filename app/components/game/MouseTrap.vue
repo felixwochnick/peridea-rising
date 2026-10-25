@@ -229,6 +229,8 @@ onMounted(() => {
   const proto = Element.prototype
   native = { setPointerCapture: proto.setPointerCapture, releasePointerCapture: proto.releasePointerCapture, hasPointerCapture: proto.hasPointerCapture }
   const { setPointerCapture: set, releasePointerCapture: release, hasPointerCapture: has } = native
+  // remembers the capturing element, not an alias of `this` for later calls
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   proto.setPointerCapture = function (id) { if (locked.value) captured = this; else set.call(this, id) }
   proto.releasePointerCapture = function (id) { if (locked.value) { if (captured === this) captured = null } else release.call(this, id) }
   proto.hasPointerCapture = function (id) { return locked.value ? captured === this : has.call(this, id) }

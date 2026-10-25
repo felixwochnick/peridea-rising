@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ modelValue: string }>()
+defineProps<{ modelValue: string }>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const colors = ['rose', 'orange', 'yellow', 'green', 'cyan', 'blue', 'violet', 'pink']
