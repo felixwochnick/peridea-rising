@@ -1,6 +1,14 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
+// Right after starting the game (start page, SSO return): the splash screen, then the modes.
+const route = useRoute()
+const splash = ref(route.query.splash !== undefined)
+function splashDone() {
+  splash.value = false
+  navigateTo({ query: {} }, { replace: true })
+}
+
 const modes = [
     {
         id: 'galactic-colonization',
@@ -13,6 +21,7 @@ const modes = [
 </script>
 
 <template>
+    <SplashScreen v-if="splash" @done="splashDone" />
     <UCard class="">
             <template #header>
                 <div class="w-full flex flex-col items-center justify-center gap-2">

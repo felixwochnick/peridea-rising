@@ -31,6 +31,8 @@ export default defineNuxtConfig({
   ],
 
   routeRules: {
+    // the login moved to the start page
+    '/login': { redirect: '/' },
     // client-only app shell: what the service worker serves for any page while offline
     '/app-shell': { ssr: false, prerender: true }
   },
@@ -45,7 +47,7 @@ export default defineNuxtConfig({
       theme_color: '#02040a',
       background_color: '#02040a',
       display: 'fullscreen',
-      start_url: '/game-modes',
+      start_url: '/',
       icons: [
         { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
         { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
@@ -74,6 +76,8 @@ export default defineNuxtConfig({
       ]
     },
     client: {
+      // keeps the browser's install event for the "Installieren" button on the start page
+      installPrompt: true,
       // checked again every hour while the app is open
       periodicSyncForUpdates: 60 * 60
     }
@@ -103,8 +107,9 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  colorMode: {
-    preference: 'dark'
+  // dark only: no color mode switching, so no stored light/system preference can take over
+  ui: {
+    colorMode: false
   },
 
   compatibilityDate: '2026-06-30',

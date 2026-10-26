@@ -8,7 +8,7 @@ const isFullscreen = useState('gc-fullscreen', () => false)
 
 async function handleLogout() {
   await logout()
-  await navigateTo('/login')
+  await navigateTo('/')
 }
 </script>
 

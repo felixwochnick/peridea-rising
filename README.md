@@ -172,7 +172,7 @@ Multi-Stage-Build auf `node:24-slim` ([`Dockerfile`](Dockerfile)):
 
 ```bash
 # App + Multiplayer (/colyseus), Port 3000
-docker run --env-file .env -p 3000:3000 ghcr.io/<owner>/<repo>
+docker run --env-file .env -p 3000:3000 ghcr.io/felixwochnick/peridea-rising
 ```
 
 [`docker-compose.example.yml`](docker-compose.example.yml) enthält eine vollständige Umgebung (App mit Multiplayer, PostgreSQL mit Healthcheck).
@@ -184,7 +184,7 @@ Für HTTPS einen TLS-terminierenden Reverse Proxy davorsetzen, der WebSocket-Upg
 | Workflow | Auslöser | |
 | --- | --- | --- |
 | [`ci.yml`](.github/workflows/ci.yml) | jeder Push | Lint, Typecheck |
-| [`docker.yml`](.github/workflows/docker.yml) | Tag `v*.*.*` gepusht | Image für `linux/amd64` + `linux/arm64` (Buildx/QEMU, GHA-Cache) nach `ghcr.io/<owner>/<repo>` |
+| [`docker.yml`](.github/workflows/docker.yml) | Tag `v*.*.*` gepusht | Image für `linux/amd64` + `linux/arm64` (Buildx/QEMU, GHA-Cache) nach `ghcr.io/felixwochnick/peridea-rising` |
 
 Image-Tags aus dem Git-Tag (SemVer): `1.2.3`, `1.2`, `1` und `latest`. Pre-Release-Tags (`v1.3.0-rc.1`) erzeugen nur `1.3.0-rc.1`.
 

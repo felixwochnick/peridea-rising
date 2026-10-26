@@ -22,10 +22,10 @@ export default defineOAuthAuthentikEventHandler({
     }
     // replaces a guest session, if any
     await setUserSession(event, { user: account }, { maxAge: 60 * 60 * 24 * 30 })
-    return sendRedirect(event, '/game-modes')
+    return sendRedirect(event, '/game-modes?splash')
   },
   onError(event, error) {
     console.error('Authentik login failed:', error)
-    return sendRedirect(event, '/login?error=sso')
+    return sendRedirect(event, '/?error=sso')
   },
 })

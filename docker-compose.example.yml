@@ -1,7 +1,7 @@
 # Example deployment: cp docker-compose.example.yml docker-compose.yml, fill in .env, `docker compose up -d`
 services:
   app:
-    image: ghcr.io/OWNER/REPO:latest
+    image: ghcr.io/felixwochnick/peridea-rising:latest
     restart: unless-stopped
     env_file: .env
     environment:
