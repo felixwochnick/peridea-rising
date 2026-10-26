@@ -24,10 +24,12 @@ export interface GameSettings {
   fullscreenOnStart: boolean
   /** Keep the mouse inside the window while in fullscreen (pointer lock + own cursor). */
   mouseTrap: boolean
+  /** Show the number tokens on the board. */
+  showNumbers: boolean
 }
 
 const STORAGE_KEY = 'gc-settings'
-const DEFAULTS: GameSettings = { quality: 'high', edgeScroll: true, scrollSpeed: 1, reduceMotion: false, fullscreenOnStart: true, mouseTrap: false }
+const DEFAULTS: GameSettings = { quality: 'high', edgeScroll: true, scrollSpeed: 1, reduceMotion: false, fullscreenOnStart: true, mouseTrap: false, showNumbers: true }
 
 function normalize(stored: Partial<GameSettings>): GameSettings {
   const settings = { ...DEFAULTS, ...stored }

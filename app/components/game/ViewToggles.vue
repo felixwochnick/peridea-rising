@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const showNumbers = useState('gc-show-numbers', () => false)
+const { settings } = useGameSettings()
+const showNumbers = computed({
+  get: () => settings.value.showNumbers,
+  set: (v) => { settings.value.showNumbers = v },
+})
 const menuOpen = useState('gc-menu', () => false)
 const { isFullscreen, toggleFullscreen, trackFullscreen } = useGameFullscreen()
 trackFullscreen()

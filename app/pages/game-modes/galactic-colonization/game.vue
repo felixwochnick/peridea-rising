@@ -9,12 +9,12 @@ const SHIP_Y = 0.14
 // Radius of the faint orbit circle around each system.
 const ORBIT_RADIUS = 0.78
 
-const showNumbers = useState('gc-show-numbers', () => false)
 const { touch } = useHudLayout()
 
 // Render budget: frame rate cap and pixel ratio from the graphics setting; while the menu is
 // open or the window is in the background the scene only needs a few frames per second.
 const { graphics, settings: gameSettings } = useGameSettings()
+const showNumbers = computed(() => gameSettings.value.showNumbers)
 const windowFocused = ref(true)
 onMounted(() => {
   windowFocused.value = document.hasFocus()

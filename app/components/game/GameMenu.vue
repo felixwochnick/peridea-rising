@@ -4,7 +4,6 @@ const open = useState('gc-menu', () => false)
 const view = ref<'main' | 'options' | 'shortcuts' | 'rolls' | 'leave'>('main')
 
 const { settings, DEFAULTS } = useGameSettings()
-const showNumbers = useState('gc-show-numbers', () => false)
 const { isFullscreen, toggleFullscreen } = useGameFullscreen()
 const { savedAt, refresh, save, load, resetGame } = useGameSave()
 const mp = useMultiplayer()
@@ -191,7 +190,7 @@ const qualityItems = (Object.keys(GRAPHICS) as GraphicsQuality[]).map(value => (
           <USlider v-model="settings.scrollSpeed" :min="0.3" :max="2.5" :step="0.1" />
         </UFormField>
         <USwitch v-model="settings.reduceMotion" size="lg" label="Animationen reduzieren" description="Kürzere Würfel- und Rohstoffanimationen." />
-        <USwitch v-model="showNumbers" size="lg" label="Zahlenplättchen anzeigen" />
+        <USwitch v-model="settings.showNumbers" size="lg" label="Zahlenplättchen anzeigen" />
         <USwitch :model-value="isFullscreen" size="lg" label="Vollbild" @update:model-value="toggleFullscreen" />
         <USwitch v-model="settings.mouseTrap" size="lg" label="Maus im Vollbild fangen" description="Der Mauszeiger kann das Spiel nicht verlassen (z. B. auf einen zweiten Bildschirm). Esc gibt ihn frei, ein Klick fängt ihn wieder." />
         <div class="flex justify-between">
